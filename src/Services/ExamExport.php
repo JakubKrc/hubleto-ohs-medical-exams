@@ -1,8 +1,8 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
 
 /**
  * "Export lekárskych prehliadok" (legacy ExportStaffHealthChecks): exams in a period as CSV,
@@ -13,7 +13,7 @@ class ExamExport extends \Hubleto\Erp\Core
   // "Any" for the type and result filters; legacy used 0, so "undetermined" results could not be exported alone.
   const ANY = -1;
 
-  public string $translationContext = 'hubleto-app-external-waiblue-hlthcrmedicalexams-loader';
+  public string $translationContext = 'hubleto-app-external-waiblue-ohsmedicalexams-loader';
   public string $translationContextInner = 'Services\\ExamExport';
 
   /**
@@ -25,18 +25,18 @@ class ExamExport extends \Hubleto\Erp\Core
     $mExam = $this->getModel(Exam::class);
     $query = $mExam->record->prepareReadQuery()
       ->with(['EMPLOYEE.BRANCH', 'CLINIC'])
-      ->where('hlthcr_exams.date_exam', '>=', $dateFrom)
-      ->where('hlthcr_exams.date_exam', '<=', $dateTo)
-      ->orderBy('hlthcr_exams.date_exam')
-      ->orderBy('hlthcr_exams.time_exam')
+      ->where('ohs_exams.date_exam', '>=', $dateFrom)
+      ->where('ohs_exams.date_exam', '<=', $dateTo)
+      ->orderBy('ohs_exams.date_exam')
+      ->orderBy('ohs_exams.time_exam')
     ;
     if ($idBranch > 0) {
-      $query = $query->whereIn('hlthcr_exams.id_employee', function ($employeesOfBranch) use ($idBranch) {
-        $employeesOfBranch->select('id')->from('hlthcr_employees')->where('id_branch', $idBranch);
+      $query = $query->whereIn('ohs_exams.id_employee', function ($employeesOfBranch) use ($idBranch) {
+        $employeesOfBranch->select('id')->from('ohs_employees')->where('id_branch', $idBranch);
       });
     }
-    if ($examType != self::ANY) $query = $query->where('hlthcr_exams.exam_type', $examType);
-    if ($result != self::ANY) $query = $query->where('hlthcr_exams.result', $result);
+    if ($examType != self::ANY) $query = $query->where('ohs_exams.exam_type', $examType);
+    if ($result != self::ANY) $query = $query->where('ohs_exams.result', $result);
 
     $typeLabels = $mExam->getTypeLabels();
     $resultLabels = $mExam->getResultLabels();

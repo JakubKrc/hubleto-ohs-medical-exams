@@ -1,10 +1,10 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Services\BranchScope;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\Roles;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\ClinicHasMedicalStaff;
+use Hubleto\App\External\WaiBlue\OhsBranches\Services\BranchScope;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\Roles;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\ClinicHasMedicalStaff;
 
 /**
  * Who sees which medical exam (legacy exam list rules):
@@ -54,9 +54,9 @@ class ExamAccess extends \Hubleto\Erp\Core
     /** @var BranchScope */
     $branchScope = $this->getService(BranchScope::class);
     return $query->whereIn($examTable . '.id_employee', function ($visibleEmployees) use ($branchScope) {
-      $visibleEmployees->select('hlthcr_employees.id')->from('hlthcr_employees');
+      $visibleEmployees->select('ohs_employees.id')->from('ohs_employees');
       // The subquery builder is changed in place, so the returned value is not needed.
-      $branchScope->restrictToVisibleBranches($visibleEmployees, 'hlthcr_employees.id_branch');
+      $branchScope->restrictToVisibleBranches($visibleEmployees, 'ohs_employees.id_branch');
     });
   }
 }

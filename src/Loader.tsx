@@ -6,10 +6,10 @@ import { type FormMeta } from '@hubleto/react-ui/components/fc/FormInterfaces';
 import TableExams from './Components/FC/TableExams'
 import TableExamHasHazards from './Components/FC/TableExamHasHazards'
 
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams';
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams';
 const T = new Translator(parentApp + '/Loader', 'Loader');
 
-// "Lekárske prehliadky" tab in the employee form (HlthcrEmployees).
+// "Lekárske prehliadky" tab in the employee form (OhsEmployees).
 function mountEmployeeExamsTab() {
   return {
     title: T.translate('Medical exams'),
@@ -20,13 +20,13 @@ function mountEmployeeExamsTab() {
   };
 }
 
-class HlthcrMedicalExamsApp extends App {
+class OhsMedicalExamsApp extends App {
   init() {
     super.init();
-    globalThis.hubleto.registerReactComponent('HlthcrMedicalExamsTableExams', TableExams);
-    globalThis.hubleto.registerReactComponent('HlthcrMedicalExamsTableExamHasHazards', TableExamHasHazards);
-    FormCustomizer.addTab('FormEmployee', 'hlthcr-medical-exams', mountEmployeeExamsTab);
+    globalThis.hubleto.registerReactComponent('OhsMedicalExamsTableExams', TableExams);
+    globalThis.hubleto.registerReactComponent('OhsMedicalExamsTableExamHasHazards', TableExamHasHazards);
+    FormCustomizer.addTab('FormEmployee', 'ohs-medical-exams', mountEmployeeExamsTab);
   }
 }
 
-globalThis.hubleto.registerApp(parentApp, new HlthcrMedicalExamsApp());
+globalThis.hubleto.registerApp(parentApp, new OhsMedicalExamsApp());

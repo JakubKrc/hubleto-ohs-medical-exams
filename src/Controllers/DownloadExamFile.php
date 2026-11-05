@@ -1,9 +1,9 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\ProtectedFile;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\ProtectedFile;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
 
 /**
  * Downloads the uploaded document or scan of a medical exam (route parameter "file": document or scan).
@@ -21,7 +21,7 @@ class DownloadExamFile extends \Hubleto\Erp\Controller
     $idExam = $this->router()->urlParamAsInteger('idExam');
     $fileColumn = $this->router()->urlParamAsString('file') == 'scan' ? 'scan' : 'document';
 
-    $exam = $this->getModel(Exam::class)->record->prepareReadQuery()->where('hlthcr_exams.id', $idExam)->first();
+    $exam = $this->getModel(Exam::class)->record->prepareReadQuery()->where('ohs_exams.id', $idExam)->first();
     if (!$exam) {
       return $protectedFile->refuse(404, $this->translate('The medical exam does not exist.'));
     }

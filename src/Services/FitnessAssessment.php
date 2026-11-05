@@ -1,15 +1,15 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
 use Hubleto\App\Community\Customers\Models\Customer;
 use Hubleto\App\Community\Documents\Models\Template;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Branch;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Job;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Clinic;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hazard;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Branch;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Job;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Hazard;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
 
 /**
  * The fitness assessment ("lekársky posudok") both legacy apps print for an exam.
@@ -17,7 +17,7 @@ use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
  */
 class FitnessAssessment extends \Hubleto\Erp\Core
 {
-  public string $translationContext = 'hubleto-app-external-waiblue-hlthcrmedicalexams-loader';
+  public string $translationContext = 'hubleto-app-external-waiblue-ohsmedicalexams-loader';
   public string $translationContextInner = 'Services\\FitnessAssessment';
 
   const TEMPLATE_CONFIG = 'fitnessAssessmentTemplateId';
@@ -29,7 +29,7 @@ class FitnessAssessment extends \Hubleto\Erp\Core
   {
     /** @var Exam */
     $mExam = $this->getModel(Exam::class);
-    $exam = $mExam->record->prepareReadQuery()->where('hlthcr_exams.id', $idExam)->first();
+    $exam = $mExam->record->prepareReadQuery()->where('ohs_exams.id', $idExam)->first();
     if (!$exam) return [];
 
     // The job and branch at the time of the exam, so an assessment made again later prints the same.
@@ -103,14 +103,14 @@ class FitnessAssessment extends \Hubleto\Erp\Core
   // The Documents app template chosen in the settings; 0 means the default template (Hubleto's Generator also falls back to it).
   public function getTemplateId(): int
   {
-    $examsApp = $this->appManager()->getApp(\Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Loader::class);
+    $examsApp = $this->appManager()->getApp(\Hubleto\App\External\WaiBlue\OhsMedicalExams\Loader::class);
     if ($examsApp === null) return 0;
     return $examsApp->configAsInteger(self::TEMPLATE_CONFIG);
   }
 
   public function saveTemplateId(int $idTemplate): void
   {
-    $examsApp = $this->appManager()->getApp(\Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Loader::class);
+    $examsApp = $this->appManager()->getApp(\Hubleto\App\External\WaiBlue\OhsMedicalExams\Loader::class);
     if ($examsApp === null) return;
     $examsApp->saveConfig(self::TEMPLATE_CONFIG, (string) $idTemplate);
   }

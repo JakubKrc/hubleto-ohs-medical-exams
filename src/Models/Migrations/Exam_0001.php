@@ -1,6 +1,6 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Migrations;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Migrations;
 
 use Hubleto\Framework\Migration;
 
@@ -8,7 +8,7 @@ class Exam_0001 extends Migration
 {
   public function upgradeSchema(): void
   {
-    $this->db->execute("CREATE TABLE IF NOT EXISTS `hlthcr_exams` (
+    $this->db->execute("CREATE TABLE IF NOT EXISTS `ohs_exams` (
       `id` int(8) primary key auto_increment,
       `id_employee` int(8) NULL DEFAULT NULL,
       `exam_type` int(1) NOT NULL DEFAULT 1,
@@ -34,20 +34,20 @@ class Exam_0001 extends Migration
 
   public function downgradeSchema(): void
   {
-    $this->db->execute("DROP TABLE IF EXISTS `hlthcr_exams`");
+    $this->db->execute("DROP TABLE IF EXISTS `ohs_exams`");
   }
 
   public function upgradeForeignKeys(): void
   {
-    $this->db->execute("ALTER TABLE `hlthcr_exams` ADD CONSTRAINT `fk__hlthcr_exams__id_employee` FOREIGN KEY (`id_employee`) REFERENCES `hlthcr_employees` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT");
-    $this->db->execute("ALTER TABLE `hlthcr_exams` ADD CONSTRAINT `fk__hlthcr_exams__id_clinic` FOREIGN KEY (`id_clinic`) REFERENCES `hlthcr_clinics` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
-    $this->db->execute("ALTER TABLE `hlthcr_exams` ADD CONSTRAINT `fk__hlthcr_exams__id_planned_exam` FOREIGN KEY (`id_planned_exam`) REFERENCES `hlthcr_exams` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT");
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_employee` FOREIGN KEY (`id_employee`) REFERENCES `ohs_employees` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT");
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_clinic` FOREIGN KEY (`id_clinic`) REFERENCES `ohs_clinics` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_planned_exam` FOREIGN KEY (`id_planned_exam`) REFERENCES `ohs_exams` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT");
   }
 
   public function downgradeForeignKeys(): void
   {
-    $this->db->execute("ALTER TABLE `hlthcr_exams` DROP FOREIGN KEY `fk__hlthcr_exams__id_employee`");
-    $this->db->execute("ALTER TABLE `hlthcr_exams` DROP FOREIGN KEY `fk__hlthcr_exams__id_clinic`");
-    $this->db->execute("ALTER TABLE `hlthcr_exams` DROP FOREIGN KEY `fk__hlthcr_exams__id_planned_exam`");
+    $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_employee`");
+    $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_clinic`");
+    $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_planned_exam`");
   }
 }

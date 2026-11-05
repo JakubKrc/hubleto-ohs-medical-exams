@@ -1,9 +1,9 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hazard;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\HasHazardLevel;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Hazard;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\HasHazardLevel;
 use Hubleto\Framework\Db\Column\Integer;
 use Hubleto\Framework\Db\Column\Lookup;
 use Hubleto\Framework\Db\Column\Virtual;
@@ -12,14 +12,14 @@ use Hubleto\Framework\Db\Column\Virtual;
  * One factor, hazard or examination of a medical exam, as submitted in the exam form (legacy lpp_risks).
  * Level 1–4 for hazard types with categories, 1 ("yes") for the others.
  */
-class ExamHasHazard extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
+class ExamHasHazard extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
 {
   use HasHazardLevel;
 
-  public string $table = 'hlthcr_exam_has_hazards';
+  public string $table = 'ohs_exam_has_hazards';
   public string $recordManagerClass = RecordManagers\ExamHasHazard::class;
-  public ?string $lookupSqlValue = '(select name from hlthcr_hazards where hlthcr_hazards.id = {%TABLE%}.id_hazard)';
-  public ?string $lookupUrlDetail = 'hlthcr-medical-exams/exam-has-hazards/{%ID%}';
+  public ?string $lookupSqlValue = '(select name from ohs_hazards where ohs_hazards.id = {%TABLE%}.id_hazard)';
+  public ?string $lookupUrlDetail = 'ohs/medical-exams/exam-has-hazards/{%ID%}';
 
   public array $relations = [
     'EXAM' => [ self::BELONGS_TO, Exam::class, 'id_exam', 'id' ],

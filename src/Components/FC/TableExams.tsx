@@ -8,7 +8,7 @@ interface TableExamsProps extends TableProps {
 }
 
 const componentName = 'TableExams'
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams'
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams'
 const RESULT_UNDETERMINED = 0;
 
 // Legacy warnings in both apps: a past exam without a result is red, an exam of an inactive employee grey.
@@ -50,7 +50,7 @@ const TableExams = (props: TableExamsProps) => {
     componentName={componentName}
     parentApp={parentApp}
     model={parentApp + '/Models/Exam'}
-    baseUrlSlug='hlthcr-medical-exams/exams'
+    baseUrlSlug='ohs/medical-exams/exams'
     endpointParams={{idEmployee: idEmployee}}
     formDefaultValues={idEmployee > 0 ? {id_employee: idEmployee} : {}}
     formModalProps={{type: 'right wide'}}

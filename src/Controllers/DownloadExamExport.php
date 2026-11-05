@@ -1,8 +1,8 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers;
 
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamExport;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamExport;
 
 class DownloadExamExport extends \Hubleto\Erp\Controller
 {

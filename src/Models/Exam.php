@@ -1,23 +1,23 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\ProtectedFile;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\EmptyDatesAsNull;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\ProtectedFile;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\EmptyDatesAsNull;
 use Hubleto\App\Community\Auth\Models\User;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Db\Column\StoredFile;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Clinic;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\KeepsStoredFiles;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Traits\UsesStoredValues;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\BranchHasClinic;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Job;
+use Hubleto\App\External\WaiBlue\OhsCore\Db\Column\StoredFile;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\KeepsStoredFiles;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\UsesStoredValues;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\BranchHasClinic;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Job;
 use Hubleto\Framework\Exceptions\RecordSaveException;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers\Api\ClinicLookup;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamAccess;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamHazards;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamNotifications;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\NextExamDate;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers\Api\ClinicLookup;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamHazards;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamNotifications;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\NextExamDate;
 use Hubleto\Framework\Db\Column\Boolean;
 use Hubleto\Framework\Db\Column\Date;
 use Hubleto\Framework\Db\Column\Integer;
@@ -30,7 +30,7 @@ use Hubleto\Framework\Db\Column\Virtual;
  * Preventive medical exam (LPP) of a client employee. Types and results use the codes both legacy apps share.
  * Its factors, regulations, activities and examinations are a snapshot of the exam form (ExamHasHazard).
  */
-class Exam extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
+class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
 {
   use EmptyDatesAsNull;
   use KeepsStoredFiles;
@@ -54,21 +54,21 @@ class Exam extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
   const SUBMITTED_HAZARDS_FIELD = 'hazard_levels';
 
   // The branch of the exam's job (the branch at the time of the exam), or else the employee's branch, with its client.
-  const BRANCH_AND_CLIENT_SQL = 'select concat(hlthcr_branches.name, " - ", customers.name)
-    from hlthcr_branches join customers on customers.id = hlthcr_branches.id_customer
-    where hlthcr_branches.id = coalesce(
-      (select hlthcr_jobs.id_branch from hlthcr_jobs where hlthcr_jobs.id = hlthcr_exams.id_job),
-      (select hlthcr_employees.id_branch from hlthcr_employees where hlthcr_employees.id = hlthcr_exams.id_employee)
+  const BRANCH_AND_CLIENT_SQL = 'select concat(ohs_branches.name, " - ", customers.name)
+    from ohs_branches join customers on customers.id = ohs_branches.id_customer
+    where ohs_branches.id = coalesce(
+      (select ohs_jobs.id_branch from ohs_jobs where ohs_jobs.id = ohs_exams.id_job),
+      (select ohs_employees.id_branch from ohs_employees where ohs_employees.id = ohs_exams.id_employee)
     )';
 
-  public string $table = 'hlthcr_exams';
+  public string $table = 'ohs_exams';
   public string $recordManagerClass = RecordManagers\Exam::class;
   // Date, employee and branch (both legacy apps show the employee and branch); the newest exams first.
   public ?string $lookupSqlValue = 'concat(ifnull(date_format({%TABLE%}.date_exam, "%d.%m.%Y"), ""),
-    ifnull(concat(" - ", (select name from hlthcr_employees where hlthcr_employees.id = {%TABLE%}.id_employee)), ""),
-    ifnull(concat(" - ", (select b.name from hlthcr_jobs j join hlthcr_branches b on b.id = j.id_branch where j.id = {%TABLE%}.id_job)), ""))';
+    ifnull(concat(" - ", (select name from ohs_employees where ohs_employees.id = {%TABLE%}.id_employee)), ""),
+    ifnull(concat(" - ", (select b.name from ohs_jobs j join ohs_branches b on b.id = j.id_branch where j.id = {%TABLE%}.id_job)), ""))';
   public string $lookupOrderBy = '{%TABLE%}.date_exam desc';
-  public ?string $lookupUrlDetail = 'hlthcr-medical-exams/exams/{%ID%}';
+  public ?string $lookupUrlDetail = 'ohs/medical-exams/exams/{%ID%}';
 
   public array $relations = [
     'EMPLOYEE' => [ self::BELONGS_TO, Employee::class, 'id_employee', 'id' ],
@@ -164,13 +164,13 @@ class Exam extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
         ->setEndpoint(ClinicLookup::ENDPOINT)
       ,
       'document' => (new StoredFile($this, $this->translate('Document')))
-        ->setDownloadUrl('hlthcr-medical-exams/exams/{%ID%}/document')
-        ->setFolderPath('hlthcr/exam-documents')
+        ->setDownloadUrl('ohs/medical-exams/exams/{%ID%}/document')
+        ->setFolderPath('ohs/exam-documents')
         ->setRenamePattern('{%FILENAME_ASCII%}__{%Y%}{%M%}{%D%}_{%H%}{%I%}{%S%}.{%EXT%}')
       ,
       'scan' => (new StoredFile($this, $this->translate('Scan')))
-        ->setDownloadUrl('hlthcr-medical-exams/exams/{%ID%}/scan')
-        ->setFolderPath('hlthcr/exam-scans')
+        ->setDownloadUrl('ohs/medical-exams/exams/{%ID%}/scan')
+        ->setFolderPath('ohs/exam-scans')
         ->setRenamePattern('{%FILENAME_ASCII%}__{%Y%}{%M%}{%D%}_{%H%}{%I%}{%S%}.{%EXT%}')
       ,
       'id_author' => (new Lookup($this, $this->translate('Created by'), User::class))->setReadonly(),
@@ -337,8 +337,8 @@ class Exam extends \Hubleto\App\External\WaiBlue\HlthcrCore\Models\HlthcrModel
   // Used by the Documents Generator when no template of the Documents app is chosen.
   public function getDocumentDefaultTemplate(array $vars = []): string
   {
-    /** @var \Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment */
-    $fitnessAssessment = $this->getService(\Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment::class);
+    /** @var \Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\FitnessAssessment */
+    $fitnessAssessment = $this->getService(\Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\FitnessAssessment::class);
     return $fitnessAssessment->getDefaultTemplate();
   }
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Job;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hazard;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\MonthDates;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Job;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Hazard;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\MonthDates;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
 
 /**
  * Date of the next periodic exam. The job's own interval wins (one legacy app); otherwise the shortest

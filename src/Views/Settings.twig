@@ -36,12 +36,12 @@
     </form>
     <div class="flex gap-2 flex-wrap">
       {% if viewParams.mayOpenHazards %}
-        <a href="{{ config.projectUrl }}/hlthcr-core/hazards" class="btn btn-transparent">
+        <a href="{{ config.projectUrl }}/ohs/core/hazards" class="btn btn-transparent">
           <span class="icon"><i class="fas fa-triangle-exclamation"></i></span>
           <span class="text">{{ translate('Hazard intervals') }}</span>
         </a>
       {% endif %}
-      <a href="{{ config.projectUrl }}/hlthcr-branches/jobs" class="btn btn-transparent">
+      <a href="{{ config.projectUrl }}/ohs/branches/jobs" class="btn btn-transparent">
         <span class="icon"><i class="fas fa-helmet-safety"></i></span>
         <span class="text">{{ translate('Job positions') }}</span>
       </a>

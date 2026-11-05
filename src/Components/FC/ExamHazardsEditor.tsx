@@ -18,7 +18,7 @@ interface ExamHazardType {
   hazards: Array<ExamHasHazard>,
 }
 
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams';
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams';
 const T = new Translator(parentApp + '/Loader', 'Components/ExamHazardsEditor');
 
 // Same values as Hazard::HIGHEST_CATEGORY and "not present" in PHP.
@@ -59,7 +59,7 @@ const ExamHazardsEditor = () => {
   }
 
   React.useEffect(() => {
-    request.get('hlthcr-medical-exams/api/get-exam-hazards', {idExam: form.id, idEmployee: idEmployee}, applyLoadedHazards);
+    request.get('ohs/medical-exams/api/get-exam-hazards', {idExam: form.id, idEmployee: idEmployee}, applyLoadedHazards);
   }, [form.id, idEmployee]);
 
   function changeLevel(idHazard: number, level: number) {

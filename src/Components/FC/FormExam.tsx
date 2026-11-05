@@ -5,13 +5,13 @@ import { type FormProps } from '@hubleto/react-ui/components/fc/FormInterfaces';
 import Input from '@hubleto/react-ui/components/fc/FormComponents/Input';
 import { dateToEUFormat } from '@hubleto/react-ui/components/fc/Inputs/DateTime';
 import { useRecordField } from '@hubleto/react-ui/components/fc/FormRecordStore';
-// Shared with other Hlthcr apps (relative import: Hubleto has no alias for custom apps).
+// Shared with other Ohs apps (relative import: Hubleto has no alias for custom apps).
 // Core is a sibling package (external_apps/ or vendor/wai-blue/).
 import ExamHazardsEditor from './ExamHazardsEditor';
 import FitnessAssessmentButtons from './FitnessAssessmentButtons';
 
 const componentName = 'FormExam';
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams';
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams';
 const T = new Translator(parentApp + '/Loader', 'Components/' + componentName);
 
 // The clinic dropdown offers the clinics of the employee's branch (FC lookups do not send form values).
@@ -66,7 +66,7 @@ const FormExam = (props: FormProps) => <Form
   componentName={componentName}
   parentApp={parentApp}
   model={parentApp + '/Models/Exam'}
-  urlSlug='hlthcr-medical-exams/exams'
+  urlSlug='ohs/medical-exams/exams'
   renderTitle={() => <ExamTitle />}
   tabs={{
     default: {title: <b>{T.translate('Medical exam')}</b>, content: () => <TabDefault />},

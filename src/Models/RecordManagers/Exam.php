@@ -1,13 +1,13 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\RecordManagers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\RecordManagers;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\RecordManagers\Traits\DefaultOrder;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\RecordManagers\Traits\DefaultOrder;
 use Hubleto\App\Community\Auth\Models\RecordManagers\User;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\RecordManagers\Clinic;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\RecordManagers\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\RecordManagers\Job;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamAccess;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\RecordManagers\Clinic;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\RecordManagers\Employee;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\RecordManagers\Job;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -15,7 +15,7 @@ class Exam extends \Hubleto\Erp\RecordManager
 {
   use DefaultOrder;
 
-  public $table = 'hlthcr_exams';
+  public $table = 'ohs_exams';
 
   const PERIOD_FILTER = 'fExamPeriod';
   const PERIOD_FILTER_ALL = 0;

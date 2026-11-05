@@ -1,8 +1,8 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\CalendarAuthor;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\CalendarAuthor;
 
 /**
  * Medical exams in the Hubleto calendar (legacy colour green), derived from the exams.
@@ -13,7 +13,7 @@ class Calendar extends \Hubleto\App\Community\Calendar\Calendar
   const COLOR = '#7fd936';
   const EXECUTED_COLOR = '#8e9091';
 
-  public string $translationContext = 'hubleto-app-external-waiblue-hlthcrmedicalexams-loader';
+  public string $translationContext = 'hubleto-app-external-waiblue-ohsmedicalexams-loader';
   public string $translationContextInner = 'Calendar';
 
   public function getCalendarConfig(): array
@@ -28,7 +28,7 @@ class Calendar extends \Hubleto\App\Community\Calendar\Calendar
 
   public function loadEvent(int $id): array
   {
-    $exam = $this->getModel(Models\Exam::class)->record->prepareReadQuery()->where('hlthcr_exams.id', $id)->first();
+    $exam = $this->getModel(Models\Exam::class)->record->prepareReadQuery()->where('ohs_exams.id', $id)->first();
     if (!$exam) return [];
     return $exam->toArray();
   }
@@ -37,22 +37,22 @@ class Calendar extends \Hubleto\App\Community\Calendar\Calendar
   {
     $query = $this->getModel(Models\Exam::class)->record->prepareReadQuery()
       ->with(['EMPLOYEE.BRANCH'])
-      ->where('hlthcr_exams.date_exam', '>=', $dateStart)
-      ->where('hlthcr_exams.date_exam', '<=', $dateEnd)
-      ->whereIn('hlthcr_exams.id_employee', function ($activeEmployees) {
-        $activeEmployees->select('id')->from('hlthcr_employees')->where('is_active', 1);
+      ->where('ohs_exams.date_exam', '>=', $dateStart)
+      ->where('ohs_exams.date_exam', '<=', $dateEnd)
+      ->whereIn('ohs_exams.id_employee', function ($activeEmployees) {
+        $activeEmployees->select('id')->from('ohs_employees')->where('is_active', 1);
       })
     ;
 
     $idAuthor = $this->getService(CalendarAuthor::class)->getAuthorIdToShow($filter);
     if ($idAuthor > 0) {
-      $query = $query->where('hlthcr_exams.id_author', $idAuthor);
+      $query = $query->where('ohs_exams.id_author', $idAuthor);
     }
 
     // Hubleto's calendar filter "not done" is 1, "done" is 2; an exam is done when it has a result.
     $completedFilter = (int) ($filter['fCompleted'] ?? 0);
-    if ($completedFilter == 1) $query = $query->where('hlthcr_exams.result', Models\Exam::RESULT_UNDETERMINED);
-    if ($completedFilter == 2) $query = $query->where('hlthcr_exams.result', '!=', Models\Exam::RESULT_UNDETERMINED);
+    if ($completedFilter == 1) $query = $query->where('ohs_exams.result', Models\Exam::RESULT_UNDETERMINED);
+    if ($completedFilter == 2) $query = $query->where('ohs_exams.result', '!=', Models\Exam::RESULT_UNDETERMINED);
 
     $events = [];
     foreach ($query->get()->toArray() as $exam) {
@@ -76,9 +76,9 @@ class Calendar extends \Hubleto\App\Community\Calendar\Calendar
       'allDay' => !$hasTime,
       'title' => $title,
       'color' => $isExecuted ? self::EXECUTED_COLOR : self::COLOR,
-      'source' => 'hlthcr-medical-exams',
+      'source' => 'ohs-medical-exams',
       'id_owner' => $exam['id_author'],
-      'url' => 'hlthcr-medical-exams/exams/' . $exam['id'],
+      'url' => 'ohs/medical-exams/exams/' . $exam['id'],
     ];
   }
 }

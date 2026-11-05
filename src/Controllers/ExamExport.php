@@ -1,10 +1,10 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers;
 
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Branch;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamExport as ExamExportService;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Branch;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamExport as ExamExportService;
 
 /**
  * Filter form of "Export lekárskych prehliadok"; the period defaults to the next month (legacy).
@@ -30,6 +30,6 @@ class ExamExport extends \Hubleto\Erp\Controller
     $this->viewParams['typeOptions'] = $mExam->getTypeLabels();
     $this->viewParams['resultOptions'] = $mExam->getResultLabels();
     $this->viewParams['any'] = ExamExportService::ANY;
-    $this->setView('@Hubleto:App:External:WaiBlue:HlthcrMedicalExams/ExamExport.twig');
+    $this->setView('@Hubleto:App:External:WaiBlue:OhsMedicalExams/ExamExport.twig');
   }
 }

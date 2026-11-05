@@ -3,7 +3,7 @@
     <h1 class="app-main-title">{{ translate('Export of medical exams') }}</h1>
   </div>
   <div class="card-body">
-    <form method="get" action="{{ config.projectUrl }}/hlthcr-medical-exams/export/download" class="grid grid-cols-1 md:grid-cols-3 gap-2 items-end">
+    <form method="get" action="{{ config.projectUrl }}/ohs/medical-exams/export/download" class="grid grid-cols-1 md:grid-cols-3 gap-2 items-end">
       <label class="flex flex-col gap-1">{{ translate('Date from') }}
         <input type="date" name="dateFrom" value="{{ viewParams.dateFrom }}" required>
       </label>

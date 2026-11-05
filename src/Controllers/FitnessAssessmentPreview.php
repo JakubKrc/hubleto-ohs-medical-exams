@@ -1,10 +1,10 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers;
 
 use Hubleto\App\Community\Documents\Generator;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\FitnessAssessment;
 
 /**
  * Printable HTML of the fitness assessment of one exam (the browser prints it).

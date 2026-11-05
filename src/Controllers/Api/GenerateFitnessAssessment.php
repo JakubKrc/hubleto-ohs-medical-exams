@@ -1,11 +1,11 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers\Api;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers\Api;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\ProtectedFile;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\ProtectedFile;
 use Hubleto\App\Community\Documents\Generator;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\FitnessAssessment;
 
 /**
  * Generates the fitness assessment of an exam as a PDF through Hubleto's document Generator.
@@ -13,7 +13,7 @@ use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment;
  */
 class GenerateFitnessAssessment extends \Hubleto\Erp\Controllers\ApiController
 {
-  const FOLDER = 'hlthcr/fitness-assessments';
+  const FOLDER = 'ohs/fitness-assessments';
 
   public function renderJson(): array
   {

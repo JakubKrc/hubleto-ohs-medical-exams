@@ -4,7 +4,7 @@ import request from '@hubleto/react-ui/core/Request';
 import { FormMetaContext } from '@hubleto/react-ui/components/fc/Form';
 import { useRecordField } from '@hubleto/react-ui/components/fc/FormRecordStore';
 
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams';
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams';
 const T = new Translator(parentApp + '/Loader', 'Components/FitnessAssessmentButtons');
 
 /**
@@ -18,7 +18,7 @@ const FitnessAssessmentButtons = () => {
 
   if (form.id <= 0) return <div className='alert alert-info'>{T.translate('Save the medical exam first.')}</div>;
 
-  const examUrl = globalThis.hubleto.config.projectUrl + '/hlthcr-medical-exams/exams/' + form.id;
+  const examUrl = globalThis.hubleto.config.projectUrl + '/ohs/medical-exams/exams/' + form.id;
   const pdfExists = hasPdf || (savedPdfFile ?? '') !== '';
 
   function showGenerationResult(response: any) {
@@ -32,7 +32,7 @@ const FitnessAssessmentButtons = () => {
 
   function generatePdf() {
     setMessage('');
-    request.get('hlthcr-medical-exams/api/generate-fitness-assessment', {idExam: form.id}, showGenerationResult);
+    request.get('ohs/medical-exams/api/generate-fitness-assessment', {idExam: form.id}, showGenerationResult);
   }
 
   return <div className='flex flex-col gap-2'>

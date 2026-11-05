@@ -1,13 +1,13 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
 use Hubleto\App\Community\Notifications\Models\Notification;
 use Hubleto\App\Community\Notifications\Sender;
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Branch;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\Recipients;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Branch;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\Recipients;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
 
 /**
  * Tells the nurses and administrators about a new exam or a new exam date, as one legacy app does.
@@ -48,13 +48,13 @@ class ExamNotifications extends \Hubleto\Erp\Core
     foreach ($recipients->getExamPlanners() as $idUser) {
       $sender->send(
         self::CATEGORY_MEDICAL_EXAMS,
-        ['hlthcr-medical-exams', 'planned-exam'],
+        ['ohs-medical-exams', 'planned-exam'],
         Exam::class,
         (int) $exam['id'],
         $idUser,
         $this->translate('Planned medical exam'),
         $employeeText . ', ' . $examDateText,
-        'hlthcr-medical-exams/exams/' . (int) $exam['id']
+        'ohs/medical-exams/exams/' . (int) $exam['id']
       );
     }
   }

@@ -1,15 +1,15 @@
 {
-    "name": "wai-blue/hubleto-hlthcr-medical-exams",
+    "name": "wai-blue/hubleto-ohs-medical-exams",
     "license": "proprietary",
-    "description": "Hlthcr for Hubleto: Medical exams (LPP): next exam date, planned exams, fitness assessment PDF, export, calendar",
+    "description": "Ohs for Hubleto: Medical exams (LPP): next exam date, planned exams, fitness assessment PDF, export, calendar",
     "require": {
-        "wai-blue/hubleto-hlthcr-core": "dev-main",
-        "wai-blue/hubleto-hlthcr-branches": "dev-main",
-        "wai-blue/hubleto-hlthcr-employees": "dev-main"
+        "wai-blue/hubleto-ohs-core": "dev-main",
+        "wai-blue/hubleto-ohs-branches": "dev-main",
+        "wai-blue/hubleto-ohs-employees": "dev-main"
     },
     "autoload": {
         "psr-4": {
-            "Hubleto\\App\\External\\WaiBlue\\HlthcrMedicalExams\\": "src"
+            "Hubleto\\App\\External\\WaiBlue\\OhsMedicalExams\\": "src"
         }
     },
     "minimum-stability": "dev"

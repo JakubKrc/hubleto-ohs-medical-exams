@@ -1,11 +1,11 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers\Api;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers\Api;
 
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Clinic;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\DropdownRecords;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamAccess;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\DropdownRecords;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
 
 /**
  * Clinic dropdown of the exam form (legacy): clinics serving the employee's branch;
@@ -13,7 +13,7 @@ use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\ExamAccess;
  */
 class ClinicLookup extends \Hubleto\Erp\Controllers\ApiController
 {
-  const ENDPOINT = 'hlthcr-medical-exams/api/clinic-lookup';
+  const ENDPOINT = 'ohs/medical-exams/api/clinic-lookup';
 
   public function renderJson(): array
   {
@@ -27,9 +27,9 @@ class ClinicLookup extends \Hubleto\Erp\Controllers\ApiController
     /** @var ExamAccess */
     $examAccess = $this->getService(ExamAccess::class);
     if ($examAccess->seesOnlyOwnClinicExams()) {
-      $query = $query->whereIn('hlthcr_clinics.id', $examAccess->getOwnClinicIds());
+      $query = $query->whereIn('ohs_clinics.id', $examAccess->getOwnClinicIds());
     } elseif ($idEmployee > 0) {
-      $employee = $this->getModel(Employee::class)->record->prepareReadQuery()->where('hlthcr_employees.id', $idEmployee)->first();
+      $employee = $this->getModel(Employee::class)->record->prepareReadQuery()->where('ohs_employees.id', $idEmployee)->first();
       $idBranch = $employee ? (int) $employee->id_branch : 0;
 
       // The clinic the exam already has stays in the list, also when it no longer serves the branch.
@@ -37,11 +37,11 @@ class ClinicLookup extends \Hubleto\Erp\Controllers\ApiController
       $idChosenClinic = (int) ($formRecord['id_clinic'] ?? 0);
 
       $query = $query->where(function ($offeredClinics) use ($idBranch, $idChosenClinic) {
-        $offeredClinics->whereIn('hlthcr_clinics.id', function ($clinicsOfBranch) use ($idBranch) {
-          $clinicsOfBranch->select('id_clinic')->from('hlthcr_branch_has_clinics')->where('id_branch', $idBranch);
+        $offeredClinics->whereIn('ohs_clinics.id', function ($clinicsOfBranch) use ($idBranch) {
+          $clinicsOfBranch->select('id_clinic')->from('ohs_branch_has_clinics')->where('id_branch', $idBranch);
         });
         if ($idChosenClinic > 0) {
-          $offeredClinics->orWhere('hlthcr_clinics.id', $idChosenClinic);
+          $offeredClinics->orWhere('ohs_clinics.id', $idChosenClinic);
         }
       });
     }

@@ -1,16 +1,16 @@
-namespace: Hubleto\App\External\WaiBlue\HlthcrMedicalExams
+namespace: Hubleto\App\External\WaiBlue\OhsMedicalExams
 appType: external
 sidebarGroup: custom
-rootUrlSlug: hlthcr-medical-exams
+rootUrlSlug: ohs/medical-exams
 name: Medical exams
 icon: fas fa-stethoscope
 author:
-  name: "Hlthcr"
-  nick: "hlthcr"
+  name: "Ohs"
+  nick: "ohs"
 highlight: Preventive medical exams of client employees with their factors, the next exam date, the fitness assessment, export and calendar.
 requires:
   - Hubleto\App\Community\Calendar
   - Hubleto\App\Community\Documents
-  - Hubleto\App\External\WaiBlue\HlthcrCore
-  - Hubleto\App\External\WaiBlue\HlthcrBranches
-  - Hubleto\App\External\WaiBlue\HlthcrEmployees
+  - Hubleto\App\External\WaiBlue\OhsCore
+  - Hubleto\App\External\WaiBlue\OhsBranches
+  - Hubleto\App\External\WaiBlue\OhsEmployees

@@ -1,13 +1,13 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams;
 
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\Branch;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Clinic;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Services\DemoData;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\Branch;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
+use Hubleto\App\External\WaiBlue\OhsCore\Services\DemoData;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
 
-class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
+class Loader extends \Hubleto\App\External\WaiBlue\OhsCore\OhsApp
 {
   const CALENDAR_APP = 'Hubleto\\App\\Community\\Calendar';
 
@@ -16,25 +16,25 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
     parent::init();
 
     $this->router()->get([
-      '/^hlthcr-medical-exams\/?$/' => Controllers\Exams::class,
-      '/^hlthcr-medical-exams\/settings\/?$/' => Controllers\Settings::class,
-      '/^hlthcr-medical-exams\/exams\/(?<idExam>\d+)\/(?<file>document|scan)\/?$/' => Controllers\DownloadExamFile::class,
-      '/^hlthcr-medical-exams\/exams\/(?<idExam>\d+)\/fitness-assessment\/?$/' => Controllers\FitnessAssessmentPreview::class,
-      '/^hlthcr-medical-exams\/exams\/(?<idExam>\d+)\/fitness-assessment\/download\/?$/' => Controllers\DownloadFitnessAssessment::class,
-      '/^hlthcr-medical-exams\/api\/generate-fitness-assessment\/?$/' => Controllers\Api\GenerateFitnessAssessment::class,
-      '/^hlthcr-medical-exams\/api\/get-exam-hazards\/?$/' => Controllers\Api\GetExamHazards::class,
-      '/^hlthcr-medical-exams\/api\/clinic-lookup\/?$/' => Controllers\Api\ClinicLookup::class,
-      '/^hlthcr-medical-exams\/export\/?$/' => Controllers\ExamExport::class,
-      '/^hlthcr-medical-exams\/export\/download\/?$/' => Controllers\DownloadExamExport::class,
+      '/^ohs\/medical-exams\/?$/' => Controllers\Exams::class,
+      '/^ohs\/medical-exams\/settings\/?$/' => Controllers\Settings::class,
+      '/^ohs\/medical-exams\/exams\/(?<idExam>\d+)\/(?<file>document|scan)\/?$/' => Controllers\DownloadExamFile::class,
+      '/^ohs\/medical-exams\/exams\/(?<idExam>\d+)\/fitness-assessment\/?$/' => Controllers\FitnessAssessmentPreview::class,
+      '/^ohs\/medical-exams\/exams\/(?<idExam>\d+)\/fitness-assessment\/download\/?$/' => Controllers\DownloadFitnessAssessment::class,
+      '/^ohs\/medical-exams\/api\/generate-fitness-assessment\/?$/' => Controllers\Api\GenerateFitnessAssessment::class,
+      '/^ohs\/medical-exams\/api\/get-exam-hazards\/?$/' => Controllers\Api\GetExamHazards::class,
+      '/^ohs\/medical-exams\/api\/clinic-lookup\/?$/' => Controllers\Api\ClinicLookup::class,
+      '/^ohs\/medical-exams\/export\/?$/' => Controllers\ExamExport::class,
+      '/^ohs\/medical-exams\/export\/download\/?$/' => Controllers\DownloadExamExport::class,
     ]);
-    $this->router()->crud('hlthcr-medical-exams/exams', Controllers\Exams::class);
-    $this->router()->crud('hlthcr-medical-exams/exam-has-hazards', Controllers\ExamHasHazards::class);
+    $this->router()->crud('ohs/medical-exams/exams', Controllers\Exams::class);
+    $this->router()->crud('ohs/medical-exams/exam-has-hazards', Controllers\ExamHasHazards::class);
 
     $this->addSearchSwitch('l', 'exams');
 
     /** @var \Hubleto\App\Community\Calendar\Manager $calendarManager */
     $calendarManager = $this->getService(\Hubleto\App\Community\Calendar\Manager::class);
-    $calendarManager->addCalendar($this, 'hlthcr-medical-exams', Calendar::class);
+    $calendarManager->addCalendar($this, 'ohs-medical-exams', Calendar::class);
 
     $this->getService(Services\ExamNotifications::class)->registerCategory();
   }
@@ -53,8 +53,8 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
   {
     $examsQuery = $this->getModel(Models\Exam::class)->record->prepareReadQuery()->with(['EMPLOYEE']);
     foreach ($expressions as $expression) {
-      $examsQuery = $examsQuery->whereIn('hlthcr_exams.id_employee', function ($matchingEmployees) use ($expression) {
-        $matchingEmployees->select('id')->from('hlthcr_employees')->where('name', 'like', '%' . $expression . '%');
+      $examsQuery = $examsQuery->whereIn('ohs_exams.id_employee', function ($matchingEmployees) use ($expression) {
+        $matchingEmployees->select('id')->from('ohs_employees')->where('name', 'like', '%' . $expression . '%');
       });
     }
 
@@ -63,7 +63,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
       $results[] = [
         'id' => $exam['id'],
         'label' => $this->translate('Medical exam') . ' ' . date('d.m.Y', strtotime($exam['date_exam'])),
-        'url' => 'hlthcr-medical-exams/exams/' . $exam['id'],
+        'url' => 'ohs/medical-exams/exams/' . $exam['id'],
         'description' => $exam['EMPLOYEE']['name'] ?? '',
       ];
     }
@@ -81,10 +81,10 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
     return '
       ' . $this->secondSidebarTitle() . '
       <div class="app-sidebar-buttons">
-        ' . $this->secondSidebarButton('hlthcr-medical-exams/exams', 'fas fa-stethoscope', $this->translate('Medical exams')) . '
-        ' . $this->secondSidebarButton('hlthcr-medical-exams/export', 'fas fa-file-csv', $this->translate('Export of medical exams')) . '
+        ' . $this->secondSidebarButton('ohs/medical-exams/exams', 'fas fa-stethoscope', $this->translate('Medical exams')) . '
+        ' . $this->secondSidebarButton('ohs/medical-exams/export', 'fas fa-file-csv', $this->translate('Export of medical exams')) . '
         ' . $calendarButton . '
-        ' . $this->secondSidebarButton('hlthcr-medical-exams/settings', 'fas fa-cog', $this->translate('Settings')) . '
+        ' . $this->secondSidebarButton('ohs/medical-exams/settings', 'fas fa-cog', $this->translate('Settings')) . '
       </div>
     ';
   }
@@ -104,7 +104,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
    * Past exams of the demo employees of each demo branch: fit with a planned next exam, unfit, and one overdue.
    * Through the model (as a user would save it), so the next exam date and the snapshot follow the real rules.
    */
-  public function generateHlthcrDemoData(): void
+  public function generateOhsDemoData(): void
   {
     /** @var Models\Exam */
     $mExam = $this->getModel(Models\Exam::class);
@@ -120,7 +120,7 @@ class Loader extends \Hubleto\App\External\WaiBlue\HlthcrCore\HlthcrApp
 
       $clinicOfBranch = $this->getModel(Clinic::class)->record
         ->whereIn('id', function ($clinicsOfBranch) use ($branch) {
-          $clinicsOfBranch->select('id_clinic')->from('hlthcr_branch_has_clinics')->where('id_branch', $branch->id);
+          $clinicsOfBranch->select('id_clinic')->from('ohs_branch_has_clinics')->where('id_branch', $branch->id);
         })
         ->first()
       ;

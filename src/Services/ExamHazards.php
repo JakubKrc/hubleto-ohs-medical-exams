@@ -1,12 +1,12 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Services;
 
-use Hubleto\App\External\WaiBlue\HlthcrBranches\Models\JobHasHazard;
-use Hubleto\App\External\WaiBlue\HlthcrCore\Models\Hazard;
-use Hubleto\App\External\WaiBlue\HlthcrEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\Exam;
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Models\ExamHasHazard;
+use Hubleto\App\External\WaiBlue\OhsBranches\Models\JobHasHazard;
+use Hubleto\App\External\WaiBlue\OhsCore\Models\Hazard;
+use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\Exam;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\ExamHasHazard;
 
 /**
  * Factors, regulations, activities and examinations of a medical exam, as submitted in the exam form.

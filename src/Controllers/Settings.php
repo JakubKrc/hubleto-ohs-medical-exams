@@ -1,15 +1,15 @@
 <?php
 
-namespace Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Controllers;
+namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers;
 
-use Hubleto\App\External\WaiBlue\HlthcrMedicalExams\Services\FitnessAssessment;
+use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\FitnessAssessment;
 
 class Settings extends \Hubleto\Erp\Controller
 {
   public function getBreadcrumbs(): array
   {
     return array_merge(parent::getBreadcrumbs(), [
-      ['url' => 'hlthcr-medical-exams', 'content' => $this->translate('Medical exams')],
+      ['url' => 'ohs/medical-exams', 'content' => $this->translate('Medical exams')],
       ['url' => 'settings', 'content' => $this->translate('Settings')],
     ]);
   }
@@ -18,8 +18,8 @@ class Settings extends \Hubleto\Erp\Controller
   {
     parent::prepareView();
 
-    /** @var \Hubleto\App\External\WaiBlue\HlthcrCore\Services\Roles */
-    $roles = $this->getService(\Hubleto\App\External\WaiBlue\HlthcrCore\Services\Roles::class);
+    /** @var \Hubleto\App\External\WaiBlue\OhsCore\Services\Roles */
+    $roles = $this->getService(\Hubleto\App\External\WaiBlue\OhsCore\Services\Roles::class);
     $maySaveSettings = $roles->isActiveUserAdministratorOrManager();
     $this->viewParams['maySaveSettings'] = $maySaveSettings;
 
@@ -37,12 +37,12 @@ class Settings extends \Hubleto\Erp\Controller
       }
     }
 
-    // The hazard catalogue is in HlthcrCore, which medical staff do not have.
-    $coreApp = $this->appManager()->getApp('Hubleto\\App\\External\\WaiBlue\\HlthcrCore');
+    // The hazard catalogue is in OhsCore, which medical staff do not have.
+    $coreApp = $this->appManager()->getApp('Hubleto\\App\\External\\WaiBlue\\OhsCore');
     $this->viewParams['mayOpenHazards'] = $coreApp !== null && $this->permissionsManager()->isAppPermittedForActiveUser($coreApp);
 
     $this->viewParams['templateNames'] = $templateNames;
     $this->viewParams['fitnessAssessmentTemplateId'] = $fitnessAssessment->getTemplateId();
-    $this->setView('@Hubleto:App:External:WaiBlue:HlthcrMedicalExams/Settings.twig');
+    $this->setView('@Hubleto:App:External:WaiBlue:OhsMedicalExams/Settings.twig');
   }
 }

@@ -7,7 +7,7 @@ interface TableExamHasHazardsProps extends TableProps {
 }
 
 const componentName = 'TableExamHasHazards'
-const parentApp = 'Hubleto/App/External/WaiBlue/HlthcrMedicalExams'
+const parentApp = 'Hubleto/App/External/WaiBlue/OhsMedicalExams'
 
 const TableExamHasHazards = (props: TableExamHasHazardsProps) => {
   const idExam = props.idExam ?? 0;
@@ -15,7 +15,7 @@ const TableExamHasHazards = (props: TableExamHasHazardsProps) => {
     componentName={componentName}
     parentApp={parentApp}
     model={parentApp + '/Models/ExamHasHazard'}
-    baseUrlSlug='hlthcr-medical-exams/exam-has-hazards'
+    baseUrlSlug='ohs/medical-exams/exam-has-hazards'
     endpointParams={{idExam: idExam}}
     formDefaultValues={idExam > 0 ? {id_exam: idExam} : {}}
     formModalProps={{type: 'right wide'}}
