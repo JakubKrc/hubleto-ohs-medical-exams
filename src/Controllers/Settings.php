@@ -18,17 +18,12 @@ class Settings extends \Hubleto\Erp\Controller
   {
     parent::prepareView();
 
-    /** @var \Hubleto\App\External\WaiBlue\OhsCore\Services\Roles */
-    $roles = $this->getService(\Hubleto\App\External\WaiBlue\OhsCore\Services\Roles::class);
-    $maySaveSettings = $roles->isActiveUserAdministratorOrManager();
-    $this->viewParams['maySaveSettings'] = $maySaveSettings;
-
     /** @var FitnessAssessment */
     $fitnessAssessment = $this->getService(FitnessAssessment::class);
     $templateNames = $fitnessAssessment->getTemplateNames();
 
     $settingsChanged = $this->router()->urlParamAsBool('settingsChanged');
-    if ($settingsChanged && $maySaveSettings) {
+    if ($settingsChanged) {
       $idTemplate = $this->router()->urlParamAsInteger('fitnessAssessmentTemplateId');
       $isKnownTemplate = $idTemplate == 0 || isset($templateNames[$idTemplate]);
       if ($isKnownTemplate) {

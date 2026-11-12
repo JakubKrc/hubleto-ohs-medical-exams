@@ -3,18 +3,14 @@
 namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models;
 
 use Hubleto\App\External\WaiBlue\OhsCore\Services\ProtectedFile;
-use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\EmptyDatesAsNull;
 use Hubleto\App\Community\Auth\Models\User;
 use Hubleto\App\External\WaiBlue\OhsCore\Db\Column\StoredFile;
 use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
-use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\KeepsStoredFiles;
-use Hubleto\App\External\WaiBlue\OhsCore\Models\Traits\UsesStoredValues;
 use Hubleto\App\External\WaiBlue\OhsBranches\Models\BranchHasClinic;
 use Hubleto\App\External\WaiBlue\OhsBranches\Models\Job;
 use Hubleto\Framework\Exceptions\RecordSaveException;
 use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
 use Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers\Api\ClinicLookup;
-use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
 use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamHazards;
 use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamNotifications;
 use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\NextExamDate;
@@ -30,12 +26,8 @@ use Hubleto\Framework\Db\Column\Virtual;
  * Preventive medical exam (LPP) of a client employee. Types and results use the codes both legacy apps share.
  * Its factors, regulations, activities and examinations are a snapshot of the exam form (ExamHasHazard).
  */
-class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
+class Exam extends \Hubleto\Erp\Model
 {
-  use EmptyDatesAsNull;
-  use KeepsStoredFiles;
-  use UsesStoredValues;
-
   const TYPE_ENTRY = 1;
   const TYPE_EXIT = 2;
   const TYPE_PERIODIC = 3;
@@ -160,7 +152,7 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
       'id_clinic' => (new Lookup($this, $this->translate('Clinic'), Clinic::class))
         ->setRequired()
         ->setDefaultVisible()
-        // Only clinics of the employee's branch; medical staff only their own clinic.
+        // Only clinics of the employee's branch.
         ->setEndpoint(ClinicLookup::ENDPOINT)
       ,
       'document' => (new StoredFile($this, $this->translate('Document')))
@@ -205,13 +197,6 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
   {
     $description = parent::describeForm();
     $description->defaultValues['id_author'] = $this->authProvider()->getUserId();
-
-    /** @var ExamAccess */
-    $examAccess = $this->getService(ExamAccess::class);
-    if ($examAccess->seesOnlyOwnClinicExams()) {
-      $description->defaultValues['id_clinic'] = $examAccess->getOwnClinicId();
-    }
-
     return $description;
   }
 
@@ -228,7 +213,6 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
   public function onBeforeCreate(array $record): array
   {
     $record = parent::onBeforeCreate($record);
-    $record = $this->emptyDatesAsNull($record);
     $this->submittedHazardLevels = $this->readSubmittedHazardLevels($record);
 
     $record['id_author'] = $this->getAuthorId();
@@ -239,7 +223,6 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
     $record['next_exam_date_typed'] = (string) ($record['date_next_exam'] ?? '') != '';
     $record['id_planned_exam'] = null;
 
-    $record = $this->keepMedicalStaffAtOwnClinic($record);
     $this->refuseClinicNotServingBranch($record);
 
     $record = $this->keepStoredFile($record, 'document', null);
@@ -250,15 +233,16 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
   public function onBeforeUpdate(array $record): array
   {
     $record = parent::onBeforeUpdate($record);
-    $record = $this->emptyDatesAsNull($record);
     $this->submittedHazardLevels = $this->readSubmittedHazardLevels($record);
-    // The next exam rules read these; a save that leaves one out must not clear the next exam.
-    $record = $this->addStoredValuesOfMissingColumns($record, [
-      'id_employee', 'exam_type', 'id_clinic', 'result', 'date_exam', 'date_next_exam', 'next_exam_type',
-    ]);
 
     $originalExam = $this->record->where('id', (int) $record['id'])->first();
     if ($originalExam) {
+      // The next exam rules read these; a save that leaves one out must not clear the next exam.
+      $columnsForNextExam = ['id_employee', 'exam_type', 'id_clinic', 'result', 'date_exam', 'date_next_exam', 'next_exam_type'];
+      foreach ($columnsForNextExam as $column) {
+        if (!array_key_exists($column, $record)) $record[$column] = $originalExam->$column;
+      }
+
       $isEmployeeChanged = (int) $record['id_employee'] != (int) $originalExam->id_employee;
       $isClinicChanged = (int) $record['id_clinic'] != (int) $originalExam->id_clinic;
       if ($isEmployeeChanged) {
@@ -267,7 +251,6 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
         $record['id_job'] = $originalExam->id_job;
       }
       if ($isEmployeeChanged || $isClinicChanged) {
-        $record = $this->keepMedicalStaffAtOwnClinic($record);
         $this->refuseClinicNotServingBranch($record);
       }
       $record['id_author'] = $originalExam->id_author;
@@ -371,15 +354,22 @@ class Exam extends \Hubleto\App\External\WaiBlue\OhsCore\Models\OhsModel
     return $idUser;
   }
 
-  // Medical staff plan exams only at their own clinics (the first one unless another own one is chosen).
-  private function keepMedicalStaffAtOwnClinic(array $record): array
+  /**
+   * A saved file path can only stay as it is, a new file must be uploaded. Otherwise a crafted save could
+   * point the exam to another record's file and download it. $originalExam is null for a new exam.
+   */
+  private function keepStoredFile(array $record, string $column, mixed $originalExam): array
   {
-    /** @var ExamAccess */
-    $examAccess = $this->getService(ExamAccess::class);
-    $isOwnClinic = in_array((int) ($record['id_clinic'] ?? 0), $examAccess->getOwnClinicIds());
-    if ($examAccess->seesOnlyOwnClinicExams() && !$isOwnClinic) {
-      $record['id_clinic'] = $examAccess->getOwnClinicId();
-    }
+    if (!array_key_exists($column, $record)) return $record;
+
+    $value = $record[$column];
+    // Hubleto's File column stores the file name of an unchanged value as the path, so only a changed one is an upload.
+    $isNewUpload = is_array($value) && ($value['changed'] ?? false) === true;
+    $isRemoved = $value === null || $value === '';
+    if ($isNewUpload || $isRemoved) return $record;
+
+    $originalPath = $originalExam ? (string) $originalExam->{$column} : '';
+    $record[$column] = $originalPath == '' ? null : $originalPath;
     return $record;
   }
 

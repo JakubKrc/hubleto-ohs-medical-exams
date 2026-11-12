@@ -27,11 +27,7 @@
       </table>
       <p class="text-sm mt-2">{{ translate('You can add your own template in the Documents app.') }}</p>
       <div class="mt-2 text-right">
-        {% if viewParams.maySaveSettings %}
-          <button type="submit" class="btn btn-primary"><span class="text">{{ translate('Save') }}</span></button>
-        {% else %}
-          <span class="text-sm">{{ translate('Only administrators and managers change the settings.') }}</span>
-        {% endif %}
+        <button type="submit" class="btn btn-primary"><span class="text">{{ translate('Save') }}</span></button>
       </div>
     </form>
     <div class="flex gap-2 flex-wrap">

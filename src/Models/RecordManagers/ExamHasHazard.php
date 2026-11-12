@@ -3,7 +3,6 @@
 namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Models\RecordManagers;
 
 use Hubleto\App\External\WaiBlue\OhsCore\Models\RecordManagers\Hazard;
-use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ExamHasHazard extends \Hubleto\Erp\RecordManager
@@ -18,31 +17,6 @@ class ExamHasHazard extends \Hubleto\Erp\RecordManager
   public function HAZARD(): BelongsTo
   {
     return $this->belongsTo(Hazard::class, 'id_hazard', 'id');
-  }
-
-  public function prepareReadQuery(mixed $query = null, int $level = 0, array|null $includeRelations = null): mixed
-  {
-    $query = parent::prepareReadQuery($query, $level, $includeRelations);
-    return $this->restrictToVisibleExams($query);
-  }
-
-  public function prepareLookupQuery(string $search): mixed
-  {
-    $query = parent::prepareLookupQuery($search);
-    return $this->restrictToVisibleExams($query);
-  }
-
-  // Visible with its exam.
-  private function restrictToVisibleExams(mixed $query): mixed
-  {
-    $hubleto = \Hubleto\Erp\Loader::getGlobalApp();
-    /** @var ExamAccess */
-    $examAccess = $hubleto->getService(ExamAccess::class);
-    return $query->whereIn($this->table . '.id_exam', function ($visibleExams) use ($examAccess) {
-      $visibleExams->select('ohs_exams.id')->from('ohs_exams');
-      // The subquery builder is changed in place, so the returned value is not needed.
-      $examAccess->restrictToVisibleExams($visibleExams, 'ohs_exams');
-    });
   }
 
   public function addUrlFiltersToQuery(mixed $query): mixed

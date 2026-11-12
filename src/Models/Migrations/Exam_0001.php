@@ -11,6 +11,7 @@ class Exam_0001 extends Migration
     $this->db->execute("CREATE TABLE IF NOT EXISTS `ohs_exams` (
       `id` int(8) primary key auto_increment,
       `id_employee` int(8) NULL DEFAULT NULL,
+      `id_job` int(8) NULL DEFAULT NULL,
       `exam_type` int(1) NOT NULL DEFAULT 1,
       `date_exam` date NULL DEFAULT NULL,
       `time_exam` time NULL DEFAULT NULL,
@@ -26,6 +27,7 @@ class Exam_0001 extends Migration
       `id_author` int(8) NULL DEFAULT NULL,
       `fitness_assessment_file` varchar(255) NULL DEFAULT NULL,
       INDEX `id_employee` (`id_employee`),
+      INDEX `id_job` (`id_job`),
       INDEX `id_clinic` (`id_clinic`),
       INDEX `date_exam` (`date_exam`),
       INDEX `date_next_exam` (`date_next_exam`)
@@ -39,9 +41,13 @@ class Exam_0001 extends Migration
 
   public function upgradeForeignKeys(): void
   {
-    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_employee` FOREIGN KEY (`id_employee`) REFERENCES `ohs_employees` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT");
+    // An employee with exams cannot be deleted (one legacy app), so no health record or its files are lost.
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_employee` FOREIGN KEY (`id_employee`) REFERENCES `ohs_employees` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
+    // The exam keeps the employee's job at the time of the exam.
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_job` FOREIGN KEY (`id_job`) REFERENCES `ohs_jobs` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
     $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_clinic` FOREIGN KEY (`id_clinic`) REFERENCES `ohs_clinics` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
     $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_planned_exam` FOREIGN KEY (`id_planned_exam`) REFERENCES `ohs_exams` (`id`) ON DELETE SET NULL ON UPDATE RESTRICT");
+    $this->db->execute("ALTER TABLE `ohs_exams` ADD CONSTRAINT `fk__ohs_exams__id_author` FOREIGN KEY (`id_author`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT");
   }
 
   public function downgradeForeignKeys(): void
@@ -49,5 +55,7 @@ class Exam_0001 extends Migration
     $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_employee`");
     $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_clinic`");
     $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_planned_exam`");
+    $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_job`");
+    $this->db->execute("ALTER TABLE `ohs_exams` DROP FOREIGN KEY `fk__ohs_exams__id_author`");
   }
 }

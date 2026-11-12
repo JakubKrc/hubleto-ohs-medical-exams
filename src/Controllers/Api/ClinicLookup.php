@@ -5,11 +5,10 @@ namespace Hubleto\App\External\WaiBlue\OhsMedicalExams\Controllers\Api;
 use Hubleto\App\External\WaiBlue\OhsCore\Models\Clinic;
 use Hubleto\App\External\WaiBlue\OhsCore\Services\DropdownRecords;
 use Hubleto\App\External\WaiBlue\OhsEmployees\Models\Employee;
-use Hubleto\App\External\WaiBlue\OhsMedicalExams\Services\ExamAccess;
 
 /**
- * Clinic dropdown of the exam form (legacy): clinics serving the employee's branch;
- * medical staff only their own clinics. Same output format as api/record/lookup.
+ * Clinic dropdown of the exam form (legacy): clinics serving the employee's branch.
+ * Same output format as api/record/lookup.
  */
 class ClinicLookup extends \Hubleto\Erp\Controllers\ApiController
 {
@@ -24,11 +23,7 @@ class ClinicLookup extends \Hubleto\Erp\Controllers\ApiController
     $mClinic = $this->getModel(Clinic::class);
     $query = $mClinic->record->prepareLookupQuery($search);
 
-    /** @var ExamAccess */
-    $examAccess = $this->getService(ExamAccess::class);
-    if ($examAccess->seesOnlyOwnClinicExams()) {
-      $query = $query->whereIn('ohs_clinics.id', $examAccess->getOwnClinicIds());
-    } elseif ($idEmployee > 0) {
+    if ($idEmployee > 0) {
       $employee = $this->getModel(Employee::class)->record->prepareReadQuery()->where('ohs_employees.id', $idEmployee)->first();
       $idBranch = $employee ? (int) $employee->id_branch : 0;
 

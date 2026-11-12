@@ -49,14 +49,7 @@
         "Medical exam": "Lekárska prehliadka",
         "Hazard": "Faktor",
         "Level": "Kategória",
-        "Add hazard": "Pridať faktor",
-        "A work factor needs a category 1 to 4, other hazards only \"yes\" (1).": "Faktor práce potrebuje kategóriu 1 až 4, ostatné riziká len „áno“ (1).",
-        "Category 1": "Kategória 1",
-        "Category 2": "Kategória 2",
-        "Category 3": "Kategória 3",
-        "Category 4": "Kategória 4",
-        "Category 1 / yes": "Kategória 1 / áno",
-        "Yes": "Áno"
+        "Add hazard": "Pridať faktor"
     },
     "Controllers\\Api\\GetExamHazards": {
         "The medical exam does not exist.": "Lekárska prehliadka neexistuje."
@@ -123,8 +116,7 @@
         "Fitness assessment template": "Šablóna lekárskeho posudku",
         "Default template": "Predvolená šablóna",
         "You can add your own template in the Documents app.": "Vlastnú šablónu môžete pridať v aplikácii Dokumenty.",
-        "Save": "Uložiť",
-        "Only administrators and managers change the settings.": "Nastavenia menia iba administrátori a manažéri."
+        "Save": "Uložiť"
     },
     "Controllers\\Api\\GenerateFitnessAssessment": {
         "The medical exam does not exist.": "Lekárska prehliadka neexistuje.",
